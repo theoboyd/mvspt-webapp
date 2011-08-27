@@ -1,64 +1,62 @@
+# Copyright 2011 Theodore Boyd
 import cgi
 import datetime
 import urllib
-import wsgiref.handlers
 
 import models
 import utils
 
 from google.appengine.ext import db
 from google.appengine.api import users
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
+
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.shortcuts import redirect
+from django.utils.datastructures import MultiValueDictKeyError
 
 
-def guestbookKey(guestbook_name=None):
-  """Constructs a datastore key for a Guestbook entity with guestbook_name."""
-  return db.Key.from_path('Guestbook', guestbook_name or 'default_guestbook')
+def Home(request):
+  return render_to_response('home.html', {})
+    
+
+def GuestbookView(request):
+  greetings_query = models.Greeting.all().order('-date')
+  greetings = greetings_query.fetch(10)
+
+  if users.get_current_user():
+    login_url = users.create_logout_url(request.get_full_path())
+    login_linktext = 'Logout'
+  else:
+    login_url = users.create_login_url(request.get_full_path())
+    login_linktext = 'Login to sign guestbook'
+
+  template_values = {
+      'greetings': greetings,
+      'login_url': login_url,
+      'login_linktext': login_linktext,
+      'user': users.get_current_user(),
+      'is_admin': users.get_current_user() == 'admin',
+  }
+  return render_to_response('guestbook_view.html', template_values)
 
 
-class Home(webapp.RequestHandler):
-  def get(self):
-    self.response.out.write(template.render(utils.getTemplate('home'), {}))
+def GuestbookSign(request):
+  # We set the same parent key on the 'Greeting' to ensure each greeting is in
+  # the same entity group. Queries across the single entity group will be
+  # consistent. However, the write rate to a single entity group should
+  # be limited to ~1/second.
+  greeting = models.Greeting()
+
+  if users.get_current_user():
+    greeting.author = users.get_current_user()
+
+  greeting.content = request.POST['content']
+  greeting.put()
+  return HttpResponseRedirect('/guestbook/view/')
 
 
-class GuestbookView(webapp.RequestHandler):
-  def get(self, count):
-    guestbook_name=self.request.get('guestbook_name')
-    greetings_query = models.Greeting.all().ancestor(
-        guestbookKey(guestbook_name)).order('-date')
-    greetings = greetings_query.fetch(count)
-
-    if users.get_current_user():
-      url = users.create_logout_url(self.request.uri)
-      url_linktext = 'Logout'
-    else:
-      url = users.create_login_url(self.request.uri)
-      url_linktext = 'Login to sign guestbook'
-
-    template_values = {
-        'greetings': greetings,
-        'url': url,
-        'url_linktext': url_linktext,
-        'user': users.get_current_user(),
-    }
-
-    self.response.out.write(template.render(
-        utils.getTemplate('guestbook_view'), template_values))
-
-
-class GuestbookSign(webapp.RequestHandler):
-  def post(self):
-    # We set the same parent key on the 'Greeting' to ensure each greeting is in
-    # the same entity group. Queries across the single entity group will be
-    # consistent. However, the write rate to a single entity group should
-    # be limited to ~1/second.
-    guestbook_name = self.request.get('guestbook_name')
-    greeting = models.Greeting(parent=guestbookKey(guestbook_name))
-
-    if users.get_current_user():
-      greeting.author = users.get_current_user()
-
-    greeting.content = self.request.get('content')
-    greeting.put()
-    self.redirect('/?' + urllib.urlencode({'guestbook_name': guestbook_name}))
+def GuestbookDeleteEntry(request, key=None):
+  if key:
+    greeting = models.Greeting.get(key)
+    greeting.delete()
+  return HttpResponseRedirect('/guestbook/view/')
