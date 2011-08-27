@@ -3,13 +3,23 @@ version: 1
 runtime: python
 api_version: 1
 
-handlers:
-- url: /favicon.ico
-  static_files: images/favicon.ico
-  upload: images/favicon.ico
+builtins:
+- remote_api: on
 
-- url: /styles
-  static_dir: styles
+inbound_services:
+- warmup
+
+handlers:
+- url: /_ah/queue/deferred
+  script: djangoappengine/deferred/handler.py
+  login: admin
+
+- url: /_ah/stats/.*
+  script: djangoappengine/appstats/ui.py
+
+- url: /media/admin
+  static_dir: django/contrib/admin/media
+  expiration: '0'
 
 - url: /.*
-  script: urls.py
+  script: djangoappengine/main/main.py

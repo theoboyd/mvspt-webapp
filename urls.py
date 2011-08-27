@@ -1,16 +1,9 @@
-import views
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
+from django.conf.urls.defaults import *
 
-application = webapp.WSGIApplication([
-  ('/', views.Home),
-  ('/guestbook', views.Guestbook)
-], debug=True)
+handler500 = 'djangotoolbox.errorviews.server_error'
 
-
-def main():
-  run_wsgi_app(application)
-
-
-if __name__ == '__main__':
-  main()
+urlpatterns = patterns('',
+    ('^_ah/warmup$', 'djangoappengine.views.warmup'),
+    ('^$', 'django.views.generic.simple.direct_to_template',
+     {'template': 'home.html'}),
+)
