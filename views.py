@@ -15,6 +15,9 @@ from django.shortcuts import redirect
 from django.utils.datastructures import MultiValueDictKeyError
 
 
+ADMIN_EMAIL = 'theoboyd@gmail.com'
+
+
 def Home(request):
   return render_to_response('home.html', {})
     
@@ -28,14 +31,21 @@ def GuestbookView(request):
     login_linktext = 'Logout'
   else:
     login_url = users.create_login_url(request.get_full_path())
-    login_linktext = 'Login to sign guestbook'
+    login_linktext = 'Login'
+
+  user = users.get_current_user()
+  try:
+    is_admin = users.get_current_user().email() == ADMIN_EMAIL
+  except AttributeError:
+    is_admin = False
+    user = ''
 
   template_values = {
       'greetings': greetings,
       'login_url': login_url,
       'login_linktext': login_linktext,
-      'user': users.get_current_user(),
-      'is_admin': users.get_current_user() == 'admin',
+      'user': user,
+      'is_admin': is_admin,
   }
   return render_to_response('guestbook_view.html', template_values)
 

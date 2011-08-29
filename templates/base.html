@@ -9,6 +9,7 @@
 
     {% block css %}
     <link rel="stylesheet" type="text/css" href="/static/styles/main.css" />
+    <script src="/static/scripts/jquery.js"></script>
     {% endblock %}
 
     {% block preload_js %}
@@ -19,11 +20,10 @@
 
   <body>
     <div id="header">
-      <span><a id="logo" href="/">Home</a></span>
-      <span><a href="{{ login_url }}">{{ login_linktext }}{% if user %} {{ user }}{% endif %}</a></span>
+      <span class="left"><a id="logo" href="/">Home</a></span>
+      <span class="right"><a href="{{ login_url }}">{{ login_linktext }}{% if user %} {{ user }}{% endif %}</a></span>
     </div>
-    <br /><br />
-    <div class="columns">
+    <div id="columns">
       <div id="content" class="column">
         {% block content-header %}
           {% if error %}<div class="error">{{ error }}</div>{% endif %}
