@@ -9,6 +9,7 @@ import os
 DATABASES['native'] = DATABASES['default']
 DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native'}
 AUTOLOAD_SITECONF = 'indexes'
+DATETIME_FORMAT = 'j M Y G:i'
 
 SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
@@ -16,6 +17,7 @@ INSTALLED_APPS = (
 #    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.auth',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'djangotoolbox',
     'autoload',
@@ -48,3 +50,8 @@ ADMIN_MEDIA_PREFIX = '/media/admin/'
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),)
 
 ROOT_URLCONF = 'urls'
+
+SOURCE_BASE_URL = 'http://www.gumtree.com/p/'  # Then add '<category>/any/<id>'
+SOURCE_CATEGORIES = ['business-services', 'cars-vans-motorbikes', 'community',
+                      'flats-houses', 'for-sale', 'jobs', 'pets']
+SOURCE_ALL_URL = 'http://www.gumtree.com/all/page'  # Then add int 1-n directly

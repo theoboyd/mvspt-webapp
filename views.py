@@ -1,10 +1,13 @@
 # Copyright 2011 Theodore Boyd
 import cgi
 import datetime
+import logging
+import re
 import urllib
 
 import models
-import utils
+import settings
+from utils.BeautifulSoup import BeautifulSoup
 
 from google.appengine.ext import db
 from google.appengine.api import users
@@ -18,20 +21,14 @@ from django.utils.datastructures import MultiValueDictKeyError
 ADMIN_EMAIL = 'theoboyd@gmail.com'
 
 
-def Home(request):
-  return render_to_response('home.html', {})
-    
-
-def GuestbookView(request):
-  greetings_query = models.Greeting.all().order('-date')
-  greetings = greetings_query.fetch(10)
-
+def UserInfo(path):
+  '''Returns auth user info'''
   if users.get_current_user():
-    login_url = users.create_logout_url(request.get_full_path())
-    login_linktext = 'Logout'
+    login_url = users.create_logout_url(path)
+    login_linktext = 'Sign out'
   else:
-    login_url = users.create_login_url(request.get_full_path())
-    login_linktext = 'Login'
+    login_url = users.create_login_url(path)
+    login_linktext = 'Sign in'
 
   user = users.get_current_user()
   try:
@@ -40,33 +37,122 @@ def GuestbookView(request):
     is_admin = False
     user = ''
 
+  return {'login_url': login_url,
+          'login_linktext': login_linktext,
+          'user': user,
+          'is_admin': is_admin}
+
+
+def Home(request):
   template_values = {
-      'greetings': greetings,
-      'login_url': login_url,
-      'login_linktext': login_linktext,
-      'user': user,
-      'is_admin': is_admin,
+      'home_active': True,
   }
-  return render_to_response('guestbook_view.html', template_values)
+  template_values.update(UserInfo(request.get_full_path()))
+  return render_to_response('home.html', template_values)
 
 
-def GuestbookSign(request):
-  # We set the same parent key on the 'Greeting' to ensure each greeting is in
-  # the same entity group. Queries across the single entity group will be
-  # consistent. However, the write rate to a single entity group should
-  # be limited to ~1/second.
-  greeting = models.Greeting()
+def CommentsView(request):
+  comments_query = models.Comment.all().order('date')
+  comments = comments_query.fetch(10)
+
+  template_values = {
+      'comments': comments,
+      'comments_active': True,
+  }
+  template_values.update(UserInfo(request.get_full_path()))
+  return render_to_response('comments_view.html', template_values)
+
+
+def CommentsAdd(request):
+  comment = models.Comment()
 
   if users.get_current_user():
-    greeting.author = users.get_current_user()
+    comment.author = users.get_current_user()
 
-  greeting.content = request.POST['content']
-  greeting.put()
-  return HttpResponseRedirect('/guestbook/view/')
+  comment.content = request.POST['content']
+  comment.put()
+  return HttpResponseRedirect('/comments/view/')
 
 
-def GuestbookDeleteEntry(request, key=None):
+def CommentsDelete(request, key=None):
   if key:
-    greeting = models.Greeting.get(key)
-    greeting.delete()
-  return HttpResponseRedirect('/guestbook/view/')
+    comment = models.Comment.get(key)
+    comment.delete()
+  return HttpResponseRedirect('/comments/view/')
+
+
+def PostingsFetch(unused_request):
+  _GetPostingPage(1)
+
+  return HttpResponseRedirect('/postings/view/')
+
+
+def _GetPostingPage(page_num):
+  url = urllib.urlopen(settings.SOURCE_ALL_URL + str(page_num))
+  data = BeautifulSoup(url.read())
+  postings = data.findAll('li', {'class': re.compile('hlisting')})
+
+  for posting in postings:
+    posting_object = models.Posting()
+    try:
+      descr_div = BeautifulSoup(posting).findAll('div', {'class': re.compile('description')})[0]
+    except TypeError:
+      continue
+    descr_div = descr_div.findAll('h3')[0]
+    description = BeautifulSoup(descr_div).findAll('a')[0]
+    url = BeautifulSoup(descr_div).get('href')
+    posting_object.content = posting
+    logging.critical(description)
+    logging.critical(url)
+    #posting_object.put()
+
+
+def PostingsView(request):
+  postings_query = models.Posting.all().order('-date')
+  postings = postings_query.fetch(100)
+
+  template_values = {
+      'postings': postings,
+      'postings_active': True,
+  }
+  template_values.update(UserInfo(request.get_full_path()))
+  return render_to_response('postings_view.html', template_values)
+
+
+def PostingsDelete(request, key=None):
+  if key:
+    posting = models.Posting.get(key)
+    posting.delete()
+  return HttpResponseRedirect('/postings/view/')
+
+
+def ScoresView(request):
+  scores_query = models.Score.all().order('date')
+  scores = scores_query.fetch(100)
+
+  template_values = {
+      'scores': scores,
+      'scores_active': True,
+  }
+  template_values.update(UserInfo(request.get_full_path()))
+  return render_to_response('scores_view.html', template_values)
+
+
+def ScoresAdd(request):
+  score = models.Score()
+
+  if users.get_current_user():
+    score.player = models.Human(appengine_user=users.get_current_user(), name=str(users.get_current_user()))
+  else:
+    score.player = models.Computer(name="Computer 1")
+
+  score.value = int(request.POST['value'])
+  score.put()
+  return HttpResponseRedirect('/scores/view/')
+
+
+def ScoresDelete(request, key=None):
+  if key:
+    score = models.Score.get(key)
+    score.delete()
+  return HttpResponseRedirect('/scores/view/')

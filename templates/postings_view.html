@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block preload_js %}
+  {% if is_admin %}
+  <script type="text/javascript" src="/static/scripts/postings.js"></script>
+  {% endif %}
+{% endblock %}
+{% block subtoolbar %}
+  {% if is_admin %}
+  <div class="toolbar sub">
+    <a class="left" href="{% url views.PostingsFetch %}">Load<img src="/static/images/reload.png" title="Load" alt="Load"></a>
+  </div>
+  {% endif %}
+{% endblock %}
+{% block content %}
+  {% if is_admin %}
+  <ul class="column">
+  {% for posting in postings %}
+    <li>
+      {% if is_admin %}
+        <span class="button"><a href="{% url views.PostingsDelete key=posting.key%}"><img src="/static/images/delete.png" title="Delete" alt="Delete"></a></span>
+      {% endif %}
+      <div class="info block">
+        {% if posting.title %}
+          <h1>{{ posting.title }}</h1>
+        {% endif %}
+        {% if posting.author %}
+          <b>{{ posting.author.nickname }}</b> posted:
+        {% else %}
+          An anonymous person posted:
+        {% endif %}
+        <!--blockquote>{{ posting.content|escape }}</blockquote-->
+        <p>{{ posting.content }}</p>
+        {% if posting.img_url %}
+          <img src="{{ posting.img_url }}">
+        {% endif %}
+        {% if posting.img_url %}{{ posting.rating }}{% else %}No rating{% endif %} &mdash; <a href="{% if posting.img_url %}{{ posting.post_url }}{% else %}#{% endif %}">source</a> &mdash; {{ posting.date.date|naturalday }} {{ posting.date.time|time:"G:i" }}
+      </div>
+    </li>
+  {% endfor %}
+  </ul>
+  {% else %}
+    <span class="error tag left">You need to be added to the list of administrators</span>
+  {% endif %}
+{% endblock %}

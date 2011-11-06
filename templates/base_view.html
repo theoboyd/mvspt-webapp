@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+  <div>
+  {% block view_for %}
+  {% endblock %}
+  </div>
+  <div>
+  {% if user %}
+  <form action="{% block view_add_url %}{% endblock %}" method="post">
+    <div>
+      <textarea name="{% block view_data_name %}{% endblock %}" class="link tag fill-most" rows="1"></textarea>
+      <input class="active tag right fill-some" type="submit" value="Submit">
+    </div>
+  </form>
+  {% else %}
+    <span class="info tag">Please sign in to post</span>
+  {% endif %}
+  </div>
+{% endblock %}

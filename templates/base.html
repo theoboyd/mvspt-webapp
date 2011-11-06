@@ -19,12 +19,19 @@
   </head>
 
   <body>
-    <div id="header">
-      <span class="left"><a id="logo" href="/">Home</a></span>
-      <span class="right"><a href="{{ login_url }}">{{ login_linktext }}{% if user %} {{ user }}{% endif %}</a></span>
+    <div class="toolbars">
+      <div class="toolbar">
+        <a class="left{% if home_active %} active{% endif %}" id="logo" href="{% url views.Home %}">Home</a>
+        <a class="left{% if comments_active %} active{% endif %}" href="{% url views.CommentsView %}">Feedback</a>
+        <a class="left{% if postings_active %} active{% endif %}" href="{% url views.PostingsView %}">Postings</a>
+        <a class="left{% if scores_active %} active{% endif %}" href="{% url views.ScoresView %}">Scores</a>
+        <a class="right" href="{{ login_url }}">{{ login_linktext }}{% if user %} {{ user }}{% endif %}</a>
+      </div>
+    {% block subtoolbar %}
+    {% endblock %}
     </div>
-    <div id="columns">
-      <div id="content" class="column">
+    <div class="columns">
+      <div id="content">
         {% block content-header %}
           {% if error %}<div class="error">{{ error }}</div>{% endif %}
           {% if info %}<div class="info">{{ info }}</div>{% endif %}
@@ -37,13 +44,7 @@
 
         {% block content %}{% endblock %}
       </div>
-
-      <div id="sidebar" class="column">
-        {% block sidebar %}
-        {% endblock %}
-      </div>
     </div>
-
     {% block js %}
     {% endblock %}
   </body>

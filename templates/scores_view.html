@@ -1,0 +1,22 @@
+{% extends "base_view.html" %}
+{% load humanize %}
+{% block view_for %}
+  {% for score in scores %}
+    <div class="outline tag">
+      <span class="tag left"><b>
+      {% if score.player.name %}{{ score.player.name }}{% else %}Anonymous{% endif %}:
+      </b></span>
+      <span class="tag right">
+      <em>{{ score.date.date|naturalday }} {{ score.date.time|time:"G:i" }}</em>
+      {% if is_admin %}
+        <a class="error tag" href="{% url views.ScoresDelete key=score.key %}">X</a>
+      {% endif %}
+      </span>
+      <br />
+      <blockquote>{{ score.value|escape }}</blockquote>
+    </div>
+    <div class="whitespace"></div>
+  {% endfor %}
+{% endblock %}
+{% block view_add_url %}{% url views.ScoresAdd %}{% endblock %}
+{% block view_data_name %}value{% endblock %}

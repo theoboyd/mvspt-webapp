@@ -19,6 +19,19 @@ table, td, tr, th {
   border-collapse: collapse;
 }
 
+blockquote {
+  word-wrap: break-word;
+}
+
+input, textarea {
+  border: 0px;
+  font-size: 100%;
+}
+
+input {
+  cursor: pointer;
+}
+
 section.body, article, aside, nav, dialog, figure {
   display: block;
   padding: 5px 0px 25px 0px;
@@ -29,57 +42,28 @@ p {
 }
 
 a {
+  color: #0000bb;
   text-decoration: none;
 }
 
-a.link:hover {
-  background: #88aaff;
-}
-
-a.error:hover {
-  background: #ffaa88;
-}
-
-a.info:hover {
-  background: #ddffef;
-}
-
-a.gold:hover {
-  background: #ffff99;
-}
-
-/* .tag styles, implied by status type */
-.link, .error, .info, .gold {
+.tag {
   color: #000000;
   text-decoration: none;
   padding: 2px 6px 2px 6px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-}
-
-.link {
-  background: #6688ff;
-}
-
-.error {
-  background: #ff8866;
-}
-
-.info {
-  background: #bbffdd;
-}
-
-.gold {
-  background: #ffff66;
+  border: 1px solid #ffffff;
 }
 
 .outline {
   padding: 2px 2px 2px 2px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
   border: 1px solid #000000;
+}
+
+.fill-most {
+  width: 88%;
+}
+
+.fill-some {
+  width: 9%;
 }
 
 .whitespace {
@@ -90,103 +74,121 @@ img {
   border: none;
 }
 
-.button {
-  display: inline-block;     
-  overflow: visible;     
-  border: 1px solid #dddddd;     
-  background: #eeeeff;
-  margin: 0 10px 0 0;
-  padding: 5px 10px 5px 10px;
-  color: #000000;
-  cursor: pointer;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-  line-height: 15px!important;
-  text-align: center;
-  text-decoration: none;
-  float: right;
-}
-
-.tab {
-  -moz-border-radius: 0px;
-  -webkit-border-radius: 0px;
-  border-radius: 0px;
-  float: left;
-  border-bottom: 0px;
-}
-
-.button.tab.default {
-  border-bottom: 0px;
-}
-
-.button.default {
-  background: #6688ff;
-  border: 1px solid #4466dd;
-  color: #000000;
-}
-
-.button:hover, .button:focus, .button:active {
-  background: #fafaff;
-}
-
-.button.tab.default:hover {
-  background: #6688ff;
-  cursor: default;
-}
-
-.button.default:hover {
-  background: #88aaff;
-}
-
-.tabframe {
-  padding: 10px;
-  overflow: hidden;
-  background: #eeeeee;
-  border: 1px solid #dddddd;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-  clear: both;
-}
-
-.tabbar {
-  padding: 0px;
-  overflow: hidden;
-  border-bottom: 1px solid #4466dd;
-  clear: both;
-}
-
-.tall {
-  line-height: 120%;
-}
-
-.searchtip {
-  float: left;
-  cursor: default;
-}
-
-#header {
-  background-color: #dddddd;
-  position: fixed;
+.toolbars {
+  display: table;
   width: 100%;
 }
 
-#header span {
-  padding: 10px;
-  border-left: 1px solid #cccccc;
+.toolbar {
+  background-color: #dddddd;
+  display: table-row;
 }
 
-#header span.left {
+.toolbar.sub {
+  padding: 2px;
+  background-color: #00cc14;
+  display: table-row;
+}
+
+.toolbar img {
+  padding-left: 10px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.toolbar a {
+  padding: 10px;
+  border-right: 1px solid #cccccc;
+  vertical-align: middle;
+  height: 16px;
+  display: block;
+}
+
+.toolbar a:hover, .toolbar a:focus, .toolbar a:active {
+  background: #cccccc;
+}
+
+
+.left {
   float: left;
 }
 
-#header span.right {
+.right {
   float: right;
 }
 
-#columns {
-  position: fixed;
-  margin-top: 40px;
-  padding: 10px;
+.columns {
+  margin: 10px;
+}
+
+ul.column{
+	width: 100%;
+	padding: 0px;
+	margin: 10px 0px;
+	list-style: none;
+}
+
+ul.column li {
+	float: left;
+	width: 350px; /* Set default width */
+	padding: 0px;
+	margin: 5px 0px;
+	display: inline;
+}
+
+.block {
+	height: 250px; /* Set default height */
+	font-size: 1em;
+	margin-right: 10px;
+	padding: 20px;
+	background: #e3e1d5;
+}
+
+.block img {
+	width: 89%;
+	padding: 5%;
+	background: #ffffff;
+	margin: 0px auto;
+	display: block;
+}
+
+/* Colour scheme */
+.link {
+  background: #4488ff;
+}
+
+.error {
+  background: #ff8866;
+}
+
+.info {
+  background: #ffffdd;
+}
+
+.gold {
+  background: #ffff66;
+}
+
+.active {
+  background: #00cc14;
+}
+
+.link:hover {
+  background: #66aaff !important;
+}
+
+.error:hover {
+  background: #ffaa88 !important;
+}
+
+.info:hover {
+  background: #ffffee !important;
+}
+
+.gold:hover {
+  background: #ffff99 !important;
+}
+
+.active:hover {
+  background: #20e030 !important;
 }

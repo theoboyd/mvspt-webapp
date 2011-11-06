@@ -30,5 +30,8 @@ handlers:
 - url: /static/scripts
   static_dir: static/scripts
 
+- url: /static/images
+  static_dir: static/images
+
 - url: /.*
   script: djangoappengine/main/main.py

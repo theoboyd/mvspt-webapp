@@ -1,0 +1,26 @@
+{% extends "base_view.html" %}
+{% load humanize %}
+{% block view_for %}
+  {% for comment in comments %}
+    <div class="outline tag">
+      <span class="tag left">
+      {% if comment.author %}
+        <b>{{ comment.author.nickname }}</b> wrote:
+      {% else %}
+        An anonymous person wrote:
+      {% endif %}
+      </span>
+      <span class="tag right">
+      <em>{{ comment.date.date|naturalday }} {{ comment.date.time|time:"G:i" }}</em>
+      {% if is_admin %}
+        <a class="error tag" href="{% url views.CommentsDelete key=comment.key %}">X</a>
+      {% endif %}
+      </span>
+      <br />
+      <blockquote>{{ comment.content|escape }}</blockquote>
+    </div>
+    <div class="whitespace"></div>
+  {% endfor %}
+{% endblock %}
+{% block view_add_url %}{% url views.CommentsAdd %}{% endblock %}
+{% block view_data_name %}content{% endblock %}
