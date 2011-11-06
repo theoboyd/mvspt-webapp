@@ -147,9 +147,25 @@ def ScoresAdd(request):
   else:
     score.player = models.Computer(name="Computer 1")
 
-  action = request.POST['action']
-  score.value = 999 #Dummy value for now
-  score.action = action.lower()
+  my_action = request.POST['action']
+
+  # Dummy score-calculator:
+  opp_action = my_action
+  if my_action == 'Cooperate' and opp_action == 'Cooperate':
+    my_score = 3
+    opp_score = 3
+  elif my_action == 'Cooperate' and opp_action == 'Defect':
+    my_score = 0
+    opp_score = 5
+  elif my_action == 'Defect' and opp_action == 'Cooperate':
+    my_score = 5
+    opp_score = 0
+  elif my_action == 'Defect' and opp_action == 'Defect':
+    my_score = 1
+    opp_score = 1
+  score.value = my_score
+
+  score.action = my_action.lower()
   score.put()
   return HttpResponseRedirect('/scores/view/')
 
