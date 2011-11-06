@@ -32,10 +32,10 @@ class Human(Player):
 class Score(db.Model):
   """A score in PD."""
   value = db.IntegerProperty()
+  action = db.StringProperty()
   date = db.DateTimeProperty(auto_now_add=True)
   player = Player()
 
 class Computer(Player):
   """A computer player."""
   strategy = Strategy()
-  scores = db.ListProperty(Score)

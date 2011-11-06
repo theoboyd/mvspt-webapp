@@ -62,6 +62,10 @@ a {
   width: 88%;
 }
 
+.fill-half {
+  width: 48%;
+}
+
 .fill-some {
   width: 9%;
 }

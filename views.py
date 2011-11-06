@@ -127,7 +127,7 @@ def PostingsDelete(request, key=None):
 
 
 def ScoresView(request):
-  scores_query = models.Score.all().order('date')
+  scores_query = models.Score.all().order('-date')
   scores = scores_query.fetch(100)
 
   template_values = {
@@ -142,11 +142,14 @@ def ScoresAdd(request):
   score = models.Score()
 
   if users.get_current_user():
-    score.player = models.Human(appengine_user=users.get_current_user(), name=str(users.get_current_user()))
+    score.player = models.Human()
+    score.player.name = str(users.get_current_user())
   else:
     score.player = models.Computer(name="Computer 1")
 
-  score.value = int(request.POST['value'])
+  action = request.POST['action']
+  score.value = 999 #Dummy value for now
+  score.action = action.lower()
   score.put()
   return HttpResponseRedirect('/scores/view/')
 
@@ -156,3 +159,36 @@ def ScoresDelete(request, key=None):
     score = models.Score.get(key)
     score.delete()
   return HttpResponseRedirect('/scores/view/')
+
+
+def LeadersView(request):
+  leaders_query = models.Score.all().order('-value')
+  leaders = leaders_query.fetch(100)
+
+  template_values = {
+      'leaders': leaders,
+      'leaders_active': True,
+      'submit_disabled': True,
+  }
+  template_values.update(UserInfo(request.get_full_path()))
+  return render_to_response('leaders_view.html', template_values)
+
+
+def LeadersAdd(request):
+  leader = models.Leader()
+
+  if users.get_current_user():
+    leader.author = users.get_current_user()
+
+  leader.content = request.POST['content']
+  leader.put()
+  return HttpResponseRedirect('/leaders/view/')
+
+
+def LeadersDelete(request, key=None):
+  if key:
+    leader = models.Leader.get(key)
+    leader.delete()
+  return HttpResponseRedirect('/leaders/view/')
+
+

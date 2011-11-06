@@ -22,10 +22,11 @@
     <div class="toolbars">
       <div class="toolbar">
         <a class="left{% if home_active %} active{% endif %}" id="logo" href="{% url views.Home %}">Home</a>
-        <a class="left{% if comments_active %} active{% endif %}" href="{% url views.CommentsView %}">Feedback</a>
-        <a class="left{% if postings_active %} active{% endif %}" href="{% url views.PostingsView %}">Postings</a>
-        <a class="left{% if scores_active %} active{% endif %}" href="{% url views.ScoresView %}">Scores</a>
+        <!--a class="left{% if postings_active %} active{% endif %}" href="{% url views.PostingsView %}">Postings</a-->
+        <a class="left{% if scores_active %} active{% endif %}" href="{% url views.ScoresView %}">Play</a>
+        <a class="left{% if leaders_active %} active{% endif %}" href="{% url views.LeadersView %}">Leaderboard</a>
         <a class="right" href="{{ login_url }}">{{ login_linktext }}{% if user %} {{ user }}{% endif %}</a>
+        <a class="left{% if comments_active %} active{% endif %}" href="{% url views.CommentsView %}">Feedback</a>
       </div>
     {% block subtoolbar %}
     {% endblock %}

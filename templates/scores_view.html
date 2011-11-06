@@ -1,11 +1,24 @@
-{% extends "base_view.html" %}
+{% extends "base.html" %}
 {% load humanize %}
-{% block view_for %}
+{% block content %}
+  <div>
+  {% if user %}
+  <form action="{% url views.ScoresAdd %}" method="post">
+    <div>
+      <input class="active tag left fill-half" name="action" type="submit" value="Cooperate">
+      <input class="active tag left fill-half" name="action" type="submit" value="Defect">
+    </div>
+  </form>
+  {% else %}
+    <span class="info tag">Please sign in to submit</span>
+  {% endif %}
+  </div>
+  <div>
+  <br /><br />
+  Your play history:<br /><br />
   {% for score in scores %}
     <div class="outline tag">
-      <span class="tag left"><b>
-      {% if score.player.name %}{{ score.player.name }}{% else %}Anonymous{% endif %}:
-      </b></span>
+      <span class="tag left"><b>You</b> deciced to {{ score.action }} and scored:</span>
       <span class="tag right">
       <em>{{ score.date.date|naturalday }} {{ score.date.time|time:"G:i" }}</em>
       {% if is_admin %}
@@ -17,6 +30,5 @@
     </div>
     <div class="whitespace"></div>
   {% endfor %}
+  </div>
 {% endblock %}
-{% block view_add_url %}{% url views.ScoresAdd %}{% endblock %}
-{% block view_data_name %}value{% endblock %}

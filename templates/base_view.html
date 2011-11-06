@@ -5,6 +5,7 @@
   {% block view_for %}
   {% endblock %}
   </div>
+  {% if not submit_disabled %}
   <div>
   {% if user %}
   <form action="{% block view_add_url %}{% endblock %}" method="post">
@@ -14,7 +15,8 @@
     </div>
   </form>
   {% else %}
-    <span class="info tag">Please sign in to post</span>
+    <span class="info tag">Please sign in to submit</span>
   {% endif %}
   </div>
+  {% endif %}
 {% endblock %}
