@@ -1,5 +1,4 @@
 from google.appengine.ext import db
-from google.appengine.ext.db import polymodel
 
 class Comment(db.Model):
   """An individual comment entry with an author, content, and date."""
@@ -20,22 +19,9 @@ class Posting(db.Model):
 class Strategy(db.Model):
   """A PD strategy."""
 
-class Player(polymodel.PolyModel):
-  """A human or computer player."""
-  #PolyModels can be inherited from but their properties cannot be overriden.
-  name = db.StringProperty()
-
-class Human(Player):
-  """A human player."""
-  appengine_user = db.UserProperty()
-
 class Score(db.Model):
   """A score in PD."""
   value = db.IntegerProperty()
   action = db.StringProperty()
   date = db.DateTimeProperty(auto_now_add=True)
-  player = Player()
-
-class Computer(Player):
-  """A computer player."""
-  strategy = Strategy()
+  player = db.UserProperty()

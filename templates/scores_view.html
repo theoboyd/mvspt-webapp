@@ -10,25 +10,26 @@
     </div>
   </form>
   {% else %}
-    <span class="info tag">Please sign in to submit</span>
+    <span class="info tag">Please sign in to play and view your play history</span>
   {% endif %}
   </div>
   <div>
-  <br /><br />
-  Your play history:<br /><br />
-  {% for score in scores %}
-    <div class="outline tag">
-      <span class="tag left"><b>You</b> decided to {{ score.action }} and scored:</span>
-      <span class="tag right">
-      <em>{{ score.date.date|naturalday }} {{ score.date.time|time:"G:i" }}</em>
-      {% if is_admin %}
-        <a class="error tag" href="{% url views.ScoresDelete key=score.key %}">X</a>
-      {% endif %}
-      </span>
-      <br />
-      <blockquote>{{ score.value|escape }}</blockquote>
-    </div>
-    <div class="whitespace"></div>
-  {% endfor %}
+  <br /><br /><br />
+  {% if user %}Your play history:<br /><br />
+    {% for score in scores %}
+      <div class="outline tag">
+        <span class="tag left"><strong>You</strong> decided to {{ score.action }} and scored:</span>
+        <span class="tag right">
+        <em>{{ score.date.date|naturalday }} {{ score.date.time|time:"G:i" }}</em>
+        {% if is_admin %}
+          <a class="error tag" href="{% url views.ScoresDelete key=score.key %}">X</a>
+        {% endif %}
+        </span>
+        <br />
+        <blockquote>{{ score.value|escape }}</blockquote>
+      </div>
+      <div class="whitespace"></div>
+    {% endfor %}
+  {% endif %}
   </div>
 {% endblock %}

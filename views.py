@@ -6,6 +6,7 @@ import re
 import urllib
 
 import models
+import strategies
 import settings
 from utils.BeautifulSoup import BeautifulSoup
 
@@ -142,27 +143,13 @@ def ScoresAdd(request):
   score = models.Score()
 
   if users.get_current_user():
-    score.player = models.Human()
-    score.player.name = str(users.get_current_user())
-  else:
-    score.player = models.Computer(name="Computer 1")
+    score.player = users.get_current_user()
 
   my_action = request.POST['action']
 
   # Dummy score-calculator:
   opp_action = my_action
-  if my_action == 'Cooperate' and opp_action == 'Cooperate':
-    my_score = 3
-    opp_score = 3
-  elif my_action == 'Cooperate' and opp_action == 'Defect':
-    my_score = 0
-    opp_score = 5
-  elif my_action == 'Defect' and opp_action == 'Cooperate':
-    my_score = 5
-    opp_score = 0
-  elif my_action == 'Defect' and opp_action == 'Defect':
-    my_score = 1
-    opp_score = 1
+  (my_score, opp_score) = strategies.play(my_action, opp_action)
   score.value = my_score
 
   score.action = my_action.lower()
@@ -178,7 +165,7 @@ def ScoresDelete(request, key=None):
 
 
 def LeadersView(request):
-  leaders_query = models.Score.all().order('-value')
+  leaders_query = models.Score.all().order('-value').order('-date')
   leaders = leaders_query.fetch(100)
 
   template_values = {
@@ -188,23 +175,3 @@ def LeadersView(request):
   }
   template_values.update(UserInfo(request.get_full_path()))
   return render_to_response('leaders_view.html', template_values)
-
-
-def LeadersAdd(request):
-  leader = models.Leader()
-
-  if users.get_current_user():
-    leader.author = users.get_current_user()
-
-  leader.content = request.POST['content']
-  leader.put()
-  return HttpResponseRedirect('/leaders/view/')
-
-
-def LeadersDelete(request, key=None):
-  if key:
-    leader = models.Leader.get(key)
-    leader.delete()
-  return HttpResponseRedirect('/leaders/view/')
-
-

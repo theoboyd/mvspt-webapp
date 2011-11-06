@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-Welcome to the <strong>Prisoner's Dilemma Social Project</strong>.<br /><br />
-This is a work in progress, so please do come back later when it will be fully functional.
+<h1>Welcome to the <strong>Prisoner's Dilemma Social Project</strong></h1>
+<span class="error tag">This is a work in progress, so please do come back later when it will be fully functional.</span>
+<br /><br /><br />
+<h1>Classical Prisoner's Dilemma</h1>
+The original scenario is as follows:<br />
+<blockquote><em>Two partners in crime are arrested, but the police do not possess enough information for a conviction. Following the separation of the two people, the police offer both a similar deal &mdash; if one testifies against their partner (<strong>defects</strong>), and the other remains silent (<strong>cooperates</strong> with their partner), the defector goes free and the cooperator receives the full one-year sentence. If both remain silent, both are sentenced to only one month in jail for a minor charge. If each 'rats out' the other, each receives a three-month sentence. Each prisoner must choose to either betray or remain silent; the decision of each is kept quiet. What should they do?</em><sup>1</sup></blockquote>
+The rules:<br/>
+<blockquote>Using the scenario above, we modify this into a points-based game where the aim is to have the <strong>highest</strong> score:</blockquote>
+<ol>
+  <li>On each turn you (and your computer opponent) must chose to either <strong>cooperate</strong> or <strong>defect</strong>.</li>
+  <li>If you both <strong>cooperate</strong>, you both receive <strong>three</strong> points.</li>
+  <li>If you both <strong>defect</strong>, you both receive <strong>one</strong> point.</li>
+  <li>If one defects and the other cooperates, the <strong>defector receives five points</strong> and the <strong>cooperator receives no points at all</strong>.</li>
+</ol>
+<sup>1</sup>Adapted from the <a href="http://en.wikipedia.org/wiki/Prisoner's_dilemma">Prisoner's dilemma article on Wikipedia</a>
 {% endblock%}

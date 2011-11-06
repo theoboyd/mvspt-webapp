@@ -3,14 +3,12 @@
 {% block view_for %}
   {% for leader in leaders %}
     <div class="outline tag">
-      <span class="tag left"><b>
-      {% if leader.name %}{{ leader.name }}{% else %}Anonymous{% endif %}
-      </b> played with the ??? strategy and scored:</span>
+      <span class="tag left"><strong>
+      {% if leader.player.name %}{{ leader.player.name }}{% else %}
+      {% if leader.player.email %}{{ leader.player.email }}{% else %}Anonymous{% endif %}{% endif %}
+      </strong> played <strong>{{ leader.action }}</strong> and scored:</span>
       <span class="tag right">
       <em>{{ leader.date.date|naturalday }} {{ leader.date.time|time:"G:i" }}</em>
-      {% if is_admin %}
-        <a class="error tag" href="{% url views.LeadersDelete key=leader.key %}">X</a>
-      {% endif %}
       </span>
       <br />
       <blockquote>{{ leader.value|escape }}</blockquote>
@@ -18,5 +16,3 @@
     <div class="whitespace"></div>
   {% endfor %}
 {% endblock %}
-{% block view_add_url %}{% url views.LeadersAdd %}{% endblock %}
-{% block view_data_name %}content{% endblock %}

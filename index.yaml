@@ -26,3 +26,10 @@ indexes:
   properties:
   - name: date
     direction: desc
+
+- kind: Score
+  properties:
+  - name: value
+    direction: desc
+  - name: date
+    direction: desc
