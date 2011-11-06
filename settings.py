@@ -50,8 +50,3 @@ ADMIN_MEDIA_PREFIX = '/media/admin/'
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),)
 
 ROOT_URLCONF = 'urls'
-
-SOURCE_BASE_URL = 'http://www.gumtree.com/p/'  # Then add '<category>/any/<id>'
-SOURCE_CATEGORIES = ['business-services', 'cars-vans-motorbikes', 'community',
-                      'flats-houses', 'for-sale', 'jobs', 'pets']
-SOURCE_ALL_URL = 'http://www.gumtree.com/all/page'  # Then add int 1-n directly

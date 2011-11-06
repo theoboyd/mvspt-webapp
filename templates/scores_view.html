@@ -18,7 +18,7 @@
   {% if user %}Your play history:<br /><br />
     {% for score in scores %}
       <div class="outline tag">
-        <span class="tag left"><strong>You</strong> decided to {{ score.action }} and scored:</span>
+        <span class="tag left"><strong>You</strong> played {{ score.0 }} and <strong>the computer</strong> played {{ score.1 }}</span>
         <span class="tag right">
         <em>{{ score.date.date|naturalday }} {{ score.date.time|time:"G:i" }}</em>
         {% if is_admin %}

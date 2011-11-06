@@ -128,8 +128,8 @@ def PostingsDelete(request, key=None):
 
 
 def ScoresView(request):
-  scores_query = models.Score.all().order('-date')
-  scores = scores_query.fetch(100)
+  player = models.GetOrCreatePlayer(users.get_current_user())
+  scores = reversed(filter(None, player.score_history.split(',')))
 
   template_values = {
       'scores': scores,
@@ -140,20 +140,21 @@ def ScoresView(request):
 
 
 def ScoresAdd(request):
-  score = models.Score()
-
-  if users.get_current_user():
-    score.player = users.get_current_user()
-
+  player = models.GetOrCreatePlayer(users.get_current_user())
   my_action = request.POST['action']
 
-  # Dummy score-calculator:
-  opp_action = my_action
-  (my_score, opp_score) = strategies.play(my_action, opp_action)
-  score.value = my_score
+  # Computer playes against player:
+  opp_action = strategies.play(my_action, player)
 
-  score.action = my_action.lower()
-  score.put()
+  # Score calculator using classical payoff matrix:
+  (my_score, opp_score) = strategies.getScore(my_action, opp_action)
+
+  player.score += my_score
+  #TODO keep and increment computer score too
+
+  player.score_history += my_action[0] + opp_action[0] + ','
+  player.put()
+
   return HttpResponseRedirect('/scores/view/')
 
 
@@ -165,7 +166,7 @@ def ScoresDelete(request, key=None):
 
 
 def LeadersView(request):
-  leaders_query = models.Score.all().order('-value').order('-date')
+  leaders_query = models.Player.all().order('-score')
   leaders = leaders_query.fetch(100)
 
   template_values = {

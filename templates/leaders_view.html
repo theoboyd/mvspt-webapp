@@ -4,14 +4,14 @@
   {% for leader in leaders %}
     <div class="outline tag">
       <span class="tag left"><strong>
-      {% if leader.player.name %}{{ leader.player.name }}{% else %}
-      {% if leader.player.email %}{{ leader.player.email }}{% else %}Anonymous{% endif %}{% endif %}
-      </strong> played <strong>{{ leader.action }}</strong> and scored:</span>
+      {% if leader.user.nickname %}{{ leader.user.nickname }}{% else %}
+      {% if leader.user.email %}{{ leader.user.email }}{% else %}Anonymous{% endif %}{% endif %}
+      </strong> played <strong>{{ leader.score_history }}</strong> and now has a score of:</span>
       <span class="tag right">
       <em>{{ leader.date.date|naturalday }} {{ leader.date.time|time:"G:i" }}</em>
       </span>
       <br />
-      <blockquote>{{ leader.value|escape }}</blockquote>
+      <blockquote>{{ leader.score|escape }}</blockquote>
     </div>
     <div class="whitespace"></div>
   {% endfor %}
