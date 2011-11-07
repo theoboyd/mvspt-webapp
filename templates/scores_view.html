@@ -5,8 +5,8 @@
   {% if user %}
   <form action="{% url views.ScoresAdd %}" method="post">
     <div>
-      <input class="active tag left fill-half" name="action" type="submit" value="Cooperate">
-      <input class="active tag right fill-half" name="action" type="submit" value="Defect">
+      <button class="active tag left fill-half" name="action" type="submit" value="C">Cooperate</button>
+      <button class="active tag right fill-half" name="action" type="submit" value="D">Defect</button>
     </div>
   </form>
   {% else %}
@@ -15,21 +15,16 @@
   </div>
   <div>
   <br /><br /><br />
-  {% if user %}Your play history:<br /><br />
+  {% if user %}Your play history (C: cooperate, D: defect):<br /><br />
     {% for score in scores %}
       <div class="outline tag">
-        <span class="tag left"><strong>You</strong> played {{ score.0 }} and <strong>the computer</strong> played {{ score.1 }}</span>
-        <span class="tag right">
-        <em>{{ score.date.date|naturalday }} {{ score.date.time|time:"G:i" }}</em>
-        {% if is_admin %}
-          <a class="error tag" href="{% url views.ScoresDelete key=score.key %}">X</a>
-        {% endif %}
-        </span>
-        <br />
-        <blockquote>{{ score.value|escape }}</blockquote>
+        <strong>You played {{ score.0 }}</strong> and the computer played {{ score.2 }}, giving you <strong>{{ score.1 }} points</strong> and the computer {{ score.3 }} points.</span>
       </div>
       <div class="whitespace"></div>
     {% endfor %}
+    {% if is_admin %}
+      <a class="error tag" href="{% url views.ScoresDelete %}">Delete Entire Score History</a>
+    {% endif %}
   {% endif %}
   </div>
 {% endblock %}

@@ -1,17 +1,16 @@
 {% extends "base_view.html" %}
 {% load humanize %}
+{% block subtoolbar %}
+  <div class="toolbar sub">
+    <a class="left subbutton" href="">Highest Score</a>
+    <a class="left subbutton" href="">Greediest Player</a>
+    <a class="left subbutton" href="">etc...</a>
+  </div>
+{% endblock %}
 {% block view_for %}
   {% for leader in leaders %}
     <div class="outline tag">
-      <span class="tag left"><strong>
-      {% if leader.user.nickname %}{{ leader.user.nickname }}{% else %}
-      {% if leader.user.email %}{{ leader.user.email }}{% else %}Anonymous{% endif %}{% endif %}
-      </strong> played <strong>{{ leader.score_history }}</strong> and now has a score of:</span>
-      <span class="tag right">
-      <em>{{ leader.date.date|naturalday }} {{ leader.date.time|time:"G:i" }}</em>
-      </span>
-      <br />
-      <blockquote>{{ leader.score|escape }}</blockquote>
+      <strong>{% if leader.user.nickname %}{{ leader.user.nickname }}{% else %}{% if leader.user.email %}{{ leader.user.email }}{% else %}Anonymous{% endif %}{% endif %}</strong> last played {{ leader.score_history.0 }} giving a total score of {{ leader.score|escape }} points
     </div>
     <div class="whitespace"></div>
   {% endfor %}

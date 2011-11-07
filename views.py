@@ -20,23 +20,23 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 
 ADMIN_EMAIL = 'theoboyd@gmail.com'
+HISTORY_SEPARATOR = ','
 
 
 def UserInfo(path):
   '''Returns auth user info'''
+  user = ''
   if users.get_current_user():
     login_url = users.create_logout_url(path)
     login_linktext = 'Sign out'
+    user = users.get_current_user()
   else:
     login_url = users.create_login_url(path)
     login_linktext = 'Sign in'
-
-  user = users.get_current_user()
   try:
     is_admin = users.get_current_user().email() == ADMIN_EMAIL
   except AttributeError:
     is_admin = False
-    user = ''
 
   return {'login_url': login_url,
           'login_linktext': login_linktext,
@@ -128,13 +128,15 @@ def PostingsDelete(request, key=None):
 
 
 def ScoresView(request):
-  player = models.GetOrCreatePlayer(users.get_current_user())
-  scores = reversed(filter(None, player.score_history.split(',')))
-
   template_values = {
-      'scores': scores,
       'scores_active': True,
   }
+
+  if users.get_current_user():
+    player = models.GetOrCreatePlayer(users.get_current_user())
+    scores = filter(None, player.score_history.split(HISTORY_SEPARATOR))
+
+    template_values['scores'] = scores
   template_values.update(UserInfo(request.get_full_path()))
   return render_to_response('scores_view.html', template_values)
 
@@ -150,24 +152,33 @@ def ScoresAdd(request):
   (my_score, opp_score) = strategies.getScore(my_action, opp_action)
 
   player.score += my_score
-  #TODO keep and increment computer score too
+  #TODO increment computer score too
 
-  player.score_history += my_action[0] + opp_action[0] + ','
+  # Generate history stack
+  player.score_history = my_action[0] + str(my_score) + opp_action[0] + str(opp_score) + HISTORY_SEPARATOR + player.score_history
   player.put()
 
   return HttpResponseRedirect('/scores/view/')
 
 
-def ScoresDelete(request, key=None):
-  if key:
-    score = models.Score.get(key)
-    score.delete()
+def ScoresDelete(request):
+  player = models.GetOrCreatePlayer(users.get_current_user())
+  player.score_history = ''
+  player.put()
   return HttpResponseRedirect('/scores/view/')
 
 
 def LeadersView(request):
   leaders_query = models.Player.all().order('-score')
   leaders = leaders_query.fetch(100)
+  #for l in leaders:
+  #  extended_history = filter(None, l.score_history.split(HISTORY_SEPARATOR))
+  #  for eh in extended_history:
+  #    l.extended_history += eh[0] + ' vs. ' + eh[1] + HISTORY_SEPARATOR
+  #  l.extended_history = extended_history
+  #TODO better history display
+  #TODO leaderboard profile pages
+  #TODO special creator profile page
 
   template_values = {
       'leaders': leaders,

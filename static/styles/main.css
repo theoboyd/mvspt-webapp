@@ -23,12 +23,12 @@ blockquote {
   word-wrap: break-word;
 }
 
-input, textarea {
+input, button, textarea {
   border: 0px;
   font-size: 100%;
 }
 
-input {
+input, button {
   cursor: pointer;
 }
 
@@ -112,7 +112,6 @@ img {
   background: #cccccc;
 }
 
-
 .left {
   float: left;
 }
@@ -193,6 +192,6 @@ ul.column li {
   background: #ffff99 !important;
 }
 
-.active:hover {
+.active:hover, .subbutton:hover {
   background: #20e030 !important;
 }
