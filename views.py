@@ -18,9 +18,23 @@ from django.shortcuts import render_to_response
 from django.shortcuts import redirect
 from django.utils.datastructures import MultiValueDictKeyError
 
+from django.middleware.csrf import get_token
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+from ajaxuploader.views import AjaxFileUploader
 
 ADMIN_EMAIL = 'theoboyd@gmail.com'
 HISTORY_SEPARATOR = ','
+
+
+def Start(request):
+  '''Start AJAX file upload'''
+    csrf_token = get_token(request)
+    return render_to_response('import.html',
+        {'csrf_token': csrf_token}, context_instance = RequestContext(request))
+
+import_uploader = AjaxFileUploader()
 
 
 def UserInfo(path):

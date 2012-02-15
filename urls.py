@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     (r'^scores/view/$', views.ScoresView),
     (r'^scores/delete/$', views.ScoresDelete),
     (r'^leaders/view/$', views.LeadersView),
+    (r'start$', views.Start, name="Start"),
+    (r'ajax-upload$', views.import_uploader, name="my_ajax_upload"),
     (r'^/$', views.Home),
     (r'^$', views.Home),
 )
