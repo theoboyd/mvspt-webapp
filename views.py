@@ -34,7 +34,7 @@ def Start(request):
     return render_to_response('import.html',
         {'csrf_token': csrf_token}, context_instance = RequestContext(request))
 
-import_uploader = AjaxFileUploader()
+ImportUploader = AjaxFileUploader()
 
 
 def UserInfo(path):
