@@ -30,9 +30,8 @@ HISTORY_SEPARATOR = ','
 
 def Start(request):
   '''Start AJAX file upload'''
-    csrf_token = get_token(request)
-    return render_to_response('import.html',
-        {'csrf_token': csrf_token}, context_instance = RequestContext(request))
+  csrf_token = get_token(request)
+  return render_to_response('import.html', {'csrf_token': csrf_token}, context_instance = RequestContext(request))
 
 ImportUploader = AjaxFileUploader()
 
