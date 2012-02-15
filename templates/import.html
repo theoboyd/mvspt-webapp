@@ -11,15 +11,15 @@
         multiple: true,
         onComplete: function(id, fileName, responseJSON) {
           if(responseJSON.success) {
-              alert("success!");
+              alert("Successfully uploaded.");
           } else {
-              alert("upload failed!");
+              alert("Upload failed.");
           }
         },
         onAllComplete: function(uploads) {
           // uploads is an array of maps
           // the maps look like this: {file: FileObject, response: JSONServerResponse}
-          alert("All complete!");
+          // alert("All complete!");
         },
         params: {
           'csrf_token': '{{ csrf_token }}',
